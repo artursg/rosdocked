@@ -28,6 +28,19 @@ elif [[ -n $PAUSED_CONTAINER_NAME ]]; then
 
 else
 	echo "Starting new container as $NEW_CONTAINER_NAME"
+
+	if [[ -d /opt/pycharm-professional ]]; then
+		MOUNT_PYCHARM="--mount type=bind,src=/opt/pycharm-professional,target=/opt/pycharm-professional,ro"
+	else
+		MOUNT_PYCHARM=""
+	fi
+
+	if [[ -d /opt/clion ]]; then
+		MOUNT_CLION="--mount type=bind,src=/opt/clion,target=/opt/clion,ro"
+	else
+		MOUNT_CLION=""
+	fi
+
 	podman run \
 	  --tty \
 	  --detach \
@@ -42,8 +55,8 @@ else
 	  --mount type=bind,src=$HOME,target=$HOME \
 	  --mount type=bind,src=/tmp/.X11-unix,target=/tmp/.X11-unix \
 	  --mount type=bind,src=$XDG_RUNTIME_DIR,target=$XDG_RUNTIME_DIR \
-	  --mount type=bind,src=/opt/pycharm-professional,target=/opt/pycharm-professional,ro \
-	  --mount type=bind,src=/opt/clion,target=/opt/clion,ro \
+	  $MOUNT_PYCHARM \
+	  $MOUNT_CLION \
 	  --name $NEW_CONTAINER_NAME \
 	  $@ \
 	  $IMAGE_NAME >/dev/null
