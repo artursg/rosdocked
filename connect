@@ -13,7 +13,7 @@ fi
 CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
 
 if [[ -z $@ ]]; then
-	podman exec --privileged -w "$(pwd)" --tty $CONTAINER_NAME $SHELL
+	podman exec --privileged -w "$(pwd)" --tty --interactive --privileged $CONTAINER_NAME $SHELL
 else
 	podman exec --privileged --tty $CONTAINER_NAME "$@"
 fi
