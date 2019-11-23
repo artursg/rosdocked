@@ -4,16 +4,16 @@ IMAGE_NAME=bitbots-melodic
 NEW_CONTAINER_NAME=rospod-melodic
 
 # Test whether a running container exists
-RUNNING_CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+RUNNING_CONTAINER_NAME=$(podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}")
 if [[ -n $RUNNING_CONTAINER_NAME ]]; then
-    echo "Container already running, connect with ./connect or stop it with ./stop"
+	echo "Container already running, connect with ./connect or stop it with ./stop"
 	exit
 fi
 
 # Test whether a stopped container exists
-EXITED_CONTAINER_NAME=`podman ps -a --filter status=exited --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
-CREATED_CONTAINER_NAME=`podman ps -a --filter status=created --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
-PAUSED_CONTAINER_NAME=`podman ps -a --filter status=paused --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+EXITED_CONTAINER_NAME=$(podman ps -a --filter status=exited --filter ancestor=$IMAGE_NAME --format "{{.Names}}")
+CREATED_CONTAINER_NAME=$(podman ps -a --filter status=created --filter ancestor=$IMAGE_NAME --format "{{.Names}}")
+PAUSED_CONTAINER_NAME=$(podman ps -a --filter status=paused --filter ancestor=$IMAGE_NAME --format "{{.Names}}")
 if [[ -n $EXITED_CONTAINER_NAME ]]; then
 	echo "Resuming exited container"
 	podman start $EXITED_CONTAINER_NAME >/dev/null
@@ -42,23 +42,22 @@ else
 	fi
 
 	podman run \
-	  --tty \
-	  --detach \
-	  --privileged \
-	  --userns=host \
-	  --cap-add='CAP_NET_BROADCAST' --cap-add='CAP_NET_RAW' \
-	  --net="host" \
-	  --add-host=$HOSTNAME:127.0.1.1 \
-	  -e SHELL \
-	  -e DISPLAY \
-	  -e CONTAINER=1 \
-	  --mount type=bind,src=$HOME,target=$HOME \
-	  --mount type=bind,src=/tmp/.X11-unix,target=/tmp/.X11-unix \
-	  --mount type=bind,src=$XDG_RUNTIME_DIR,target=$XDG_RUNTIME_DIR \
-	  $MOUNT_PYCHARM \
-	  $MOUNT_CLION \
-	  --name $NEW_CONTAINER_NAME \
-	  $@ \
-	  $IMAGE_NAME >/dev/null
+		--tty \
+		--detach \
+		--privileged \
+		--userns=host \
+		--cap-add='CAP_NET_BROADCAST' --cap-add='CAP_NET_RAW' \
+		--net="host" \
+		--add-host=$HOSTNAME:127.0.1.1 \
+		-e SHELL \
+		-e DISPLAY \
+		-e CONTAINER=1 \
+		--mount type=bind,src=$HOME,target=$HOME \
+		--mount type=bind,src=/tmp/.X11-unix,target=/tmp/.X11-unix \
+		--mount type=bind,src=$XDG_RUNTIME_DIR,target=$XDG_RUNTIME_DIR \
+		$MOUNT_PYCHARM \
+		$MOUNT_CLION \
+		--name $NEW_CONTAINER_NAME \
+		$@ \
+		$IMAGE_NAME >/dev/null
 fi
-

@@ -2,19 +2,18 @@
 set -e
 
 IMAGE_NAME=bitbots-melodic
-CONTAINER_NAME=`podman ps -a --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+CONTAINER_NAME=$(podman ps -a --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}")
 
 if [[ -z $CONTAINER_NAME ]]; then
     echo "Container not running, starting it"
-    DIR=`dirname $0`
+    DIR=$(dirname $0)
     bash -c "$DIR/start"
 fi
 
-CONTAINER_NAME=`podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}"`
+CONTAINER_NAME=$(podman ps --filter status=running --filter ancestor=$IMAGE_NAME --format "{{.Names}}")
 
 if [[ -z $@ ]]; then
-	podman exec --privileged -w "$(pwd)" --tty --interactive --privileged $CONTAINER_NAME $SHELL
+    podman exec --privileged -w "$(pwd)" --tty --interactive --privileged $CONTAINER_NAME $SHELL
 else
-	podman exec --privileged --tty $CONTAINER_NAME "$@"
+    podman exec --privileged --tty $CONTAINER_NAME "$@"
 fi
-

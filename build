@@ -14,4 +14,3 @@ buildah build-using-dockerfile \
 	-t $IMAGE_NAME \
 	$@ \
 	$(dirname $0)
-
