@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+IMAGE_NAME=bitbots-melodic
+
+# Build the oci image
+buildah build-using-dockerfile \
+	--network=host \
+	--build-arg user=$USER \
+	--build-arg uid=$UID \
+	--build-arg gid=$GID \
+	--build-arg home=$HOME \
+	--build-arg workspace=$HOME \
+	--build-arg shell=$(which zsh) \
+	-t $IMAGE_NAME \
+	$@ \
+	$(dirname $0)
+
